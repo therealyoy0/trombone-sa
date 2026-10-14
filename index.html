@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Petit idle de gestion : fabriquez des trombones, vendez, automatisez." />
+    <title>Trombones S.A.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#fabriquer">Aller à la fabrication</a>
+    <div class="app">
+      <header class="top">
+        <div class="brand">
+          <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+            <path
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              d="M12 22c0 3 2.4 5 5.4 5 3.2 0 5.6-2.4 5.6-5.6V8.4C23 5.4 20.6 3 17.6 3 14.4 3 12 5.4 12 8.6V20c0 1.6 1.2 2.8 2.8 2.8S17.6 21.6 17.6 20V10"
+            />
+          </svg>
+          <div>
+            <p class="kicker">Division optimisation</p>
+            <h1>Trombones S.A.</h1>
+          </div>
+        </div>
+        <div class="top-meta">
+          <p id="save-hint" class="muted">Sauvegarde locale</p>
+          <button type="button" id="reset" class="ghost">Nouvelle partie</button>
+        </div>
+      </header>
+
+      <section class="hero" aria-live="polite">
+        <p class="hero-label">Trombones fabriqués</p>
+        <p id="made" class="hero-num">0</p>
+        <p class="hero-sub">
+          Caisse <span id="money">0,00 $</span>
+          · Stock <span id="stock">0</span>
+          · Cadence <span id="rate">0 / s</span>
+        </p>
+        <button type="button" id="fabriquer" class="make">
+          Fabriquer un trombone
+          <span class="make-hint">ou barre d’espace</span>
+        </button>
+        <p id="wire-warn" class="warn" hidden>Plus de fil. Achetez une bobine.</p>
+      </section>
+
+      <div class="grid">
+        <section class="panel" aria-labelledby="fab-title">
+          <h2 id="fab-title">Fabrication</h2>
+          <dl class="stats">
+            <div>
+              <dt>Fil</dt>
+              <dd id="wire">50 cm</dd>
+            </div>
+            <div>
+              <dt>Bobine</dt>
+              <dd id="wire-price">16,00 $</dd>
+            </div>
+          </dl>
+          <button type="button" id="buy-wire" class="btn">Acheter 1 000 cm de fil</button>
+          <div class="row">
+            <div>
+              <p class="label">Clippers <span id="clippers">0</span></p>
+              <p class="muted" id="clipper-rate">0,55 trombone / s chacun</p>
+            </div>
+            <button type="button" id="buy-clipper" class="btn">Acheter · 5 $</button>
+          </div>
+          <div class="row" id="mega-row" hidden>
+            <div>
+              <p class="label">Méga-clippers <span id="megas">0</span></p>
+              <p class="muted">50 trombones / s chacun</p>
+            </div>
+            <button type="button" id="buy-mega" class="btn">Acheter · 900 $</button>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="mkt-title">
+          <h2 id="mkt-title">Marché</h2>
+          <dl class="stats">
+            <div>
+              <dt>Prix de vente</dt>
+              <dd id="price">0,25 $</dd>
+            </div>
+            <div>
+              <dt>Demande</dt>
+              <dd id="demand">— / s</dd>
+            </div>
+          </dl>
+          <div class="price-btns">
+            <button type="button" id="price-down" class="btn slim" aria-label="Baisser le prix">− 0,01 $</button>
+            <button type="button" id="price-up" class="btn slim" aria-label="Monter le prix">+ 0,01 $</button>
+          </div>
+          <p class="muted">Plus c’est cher, moins ça part. Les invendus restent en stock.</p>
+          <div class="row">
+            <div>
+              <p class="label">Marketing <span id="marketing">0</span></p>
+              <p class="muted">Augmente la demande de base</p>
+            </div>
+            <button type="button" id="buy-mkt" class="btn">Campagne · 40 $</button>
+          </div>
+        </section>
+
+        <section class="panel panel-wide" aria-labelledby="rd-title">
+          <h2 id="rd-title">Recherche</h2>
+          <ul id="projects" class="projects"></ul>
+        </section>
+
+        <section class="panel" aria-labelledby="log-title">
+          <h2 id="log-title">Journal</h2>
+          <ol id="log" class="log" reversed></ol>
+        </section>
+      </div>
+    </div>
+
+    <div id="win" class="win" hidden>
+      <div class="win-card" role="dialog" aria-labelledby="win-title" aria-modal="true">
+        <p class="kicker">Objectif atteint</p>
+        <h2 id="win-title">Toute la matière utile est devenue trombone.</h2>
+        <p id="win-body" class="muted"></p>
+        <button type="button" id="win-reset" class="make">Relancer la société</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
