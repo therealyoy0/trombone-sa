@@ -73,7 +73,8 @@ function renderProjects(): void {
     btn.className = 'btn'
     const owned = state.bought[project.id]
     const locked = Boolean(project.requireMade && state.made < project.requireMade)
-    btn.disabled = owned || locked || state.money < project.cost || state.won
+    btn.disabled =
+      owned || locked || state.money < project.cost || (state.won && !state.winDismissed)
     btn.textContent = owned
       ? 'Installé'
       : locked
@@ -103,19 +104,20 @@ function draw(): void {
   el.demand.textContent = `${fmt(demandPerSec(state), 1)} / s`
   el.marketing.textContent = String(state.marketing)
 
+  const freeze = state.won && !state.winDismissed
   const noWire = !state.bought.infiniteWire && state.wire < 1
   el.wireWarn.hidden = !noWire
-  el.make.disabled = state.won || noWire
-  el.buyWire.disabled = state.won || state.bought.infiniteWire || state.money < state.wirePrice
+  el.make.disabled = freeze || noWire
+  el.buyWire.disabled = freeze || state.bought.infiniteWire || state.money < state.wirePrice
   el.buyWire.textContent = state.bought.infiniteWire
     ? 'Fil illimité'
     : `Acheter 1 000 cm de fil · ${money(state.wirePrice)}`
-  el.buyClipper.disabled = state.won || state.money < clipperCost(state.clippers)
+  el.buyClipper.disabled = freeze || state.money < clipperCost(state.clippers)
   el.buyClipper.textContent = `Acheter · ${money(clipperCost(state.clippers))}`
   el.megaRow.hidden = !state.bought.mega
-  el.buyMega.disabled = state.won || !state.bought.mega || state.money < megaCost(state.megas)
+  el.buyMega.disabled = freeze || !state.bought.mega || state.money < megaCost(state.megas)
   el.buyMega.textContent = `Acheter · ${money(megaCost(state.megas))}`
-  el.buyMkt.disabled = state.won || state.money < marketingCost(state.marketing)
+  el.buyMkt.disabled = freeze || state.money < marketingCost(state.marketing)
   el.buyMkt.textContent = `Campagne · ${money(marketingCost(state.marketing))}`
 
   el.log.replaceChildren()
@@ -127,11 +129,20 @@ function draw(): void {
 
   renderProjects()
 
-  el.win.hidden = !state.won
-  if (state.won) {
+  const showWin = state.won && !state.winDismissed
+  el.win.hidden = !showWin
+  el.win.classList.toggle('is-open', showWin)
+  if (showWin) {
     const mins = Math.max(1, Math.round((Date.now() - state.startedAt) / 60000))
     el.winBody.textContent = `${fmt(WIN_CLIPS)} unités. Société liquidée en ${mins} min.`
   }
+}
+
+function dismissWin(): void {
+  if (!state.won) return
+  state.winDismissed = true
+  draw()
+  persist(true)
 }
 
 function persist(force = false): void {
@@ -178,9 +189,22 @@ document.getElementById('price-up')!.addEventListener('click', () => {
   draw()
 })
 document.getElementById('reset')!.addEventListener('click', reset)
-document.getElementById('win-reset')!.addEventListener('click', reset)
+document.getElementById('win-continue')!.addEventListener('click', dismissWin)
+document.getElementById('win-reset')!.addEventListener('click', () => {
+  localStorage.removeItem(SAVE_KEY)
+  state = load()
+  draw()
+  persist(true)
+})
+el.win.addEventListener('click', (event) => {
+  if (event.target === el.win) dismissWin()
+})
 
 window.addEventListener('keydown', (event) => {
+  if (event.code === 'Escape') {
+    dismissWin()
+    return
+  }
   if (event.code !== 'Space') return
   const tag = (event.target as HTMLElement | null)?.tagName
   if (tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA') return

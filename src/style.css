@@ -337,10 +337,14 @@ button {
   position: fixed;
   inset: 0;
   background: rgba(2, 6, 23, 0.82);
-  display: grid;
+  display: none;
   place-items: center;
   padding: 16px;
   z-index: 10;
+}
+
+.win.is-open {
+  display: grid;
 }
 
 .win-card {
@@ -358,6 +362,17 @@ button {
   color: var(--fg);
   font-size: 1.4rem;
   margin: 8px 0 12px;
+}
+
+.win-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.win-actions .make {
+  width: 100%;
 }
 
 @media (max-width: 720px) {

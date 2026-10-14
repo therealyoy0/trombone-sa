@@ -66,6 +66,7 @@ export type State = {
   bought: Record<ProjectId, boolean>
   log: string[]
   won: boolean
+  winDismissed: boolean
   startedAt: number
 }
 
@@ -89,6 +90,7 @@ export function fresh(): State {
     },
     log: ['Objectif : fabriquer un million de trombones. Vous avez 50 cm de fil.'],
     won: false,
+    winDismissed: false,
     startedAt: Date.now(),
   }
 }
@@ -162,7 +164,7 @@ export function pushLog(state: State, line: string): void {
 }
 
 export function makeClip(state: State, count = 1): number {
-  if (state.won) return 0
+  if (state.won && !state.winDismissed) return 0
   let n = count
   if (n <= 0) return 0
   if (!state.bought.infiniteWire) {
@@ -235,7 +237,7 @@ export function nudgePrice(state: State, delta: number): void {
 }
 
 export function tick(state: State, dtSec: number): void {
-  if (state.won) return
+  if (state.won && !state.winDismissed) return
 
   const rate = clipperRate(state)
   if (rate > 0) makeClip(state, rate * dtSec)
